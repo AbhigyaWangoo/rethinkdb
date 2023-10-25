@@ -8,9 +8,9 @@ cache_info = r.db('rethinkdb').table('server_status').get(1).run(conn)
 
 # Print cache information
 print("Cache Information:")
-print("Total Cache Size: {} MB".format(cache_info['http_cache']['total_size']))
-print("Cache In Use: {} MB".format(cache_info['http_cache']['in_use_size']))
-print("Cache Free: {} MB".format(cache_info['http_cache']['free_size']))
+print(f"Total Cache Size: {cache_info['http_cache']['total_size']} MB")
+print(f"Cache In Use: {cache_info['http_cache']['in_use_size']} MB")
+print(f"Cache Free: {cache_info['http_cache']['free_size']} MB")
 
 # Close the connection
 conn.close()

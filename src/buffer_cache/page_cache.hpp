@@ -372,6 +372,8 @@ public:
     auto_drainer_t::lock_t drainer_lock() { return drainer_->lock(); }
     serializer_t *serializer() { return serializer_; }
 
+    void spit_cache_contents(std::string filename);
+
 private:
     friend class page_read_ahead_cb_t;
     void add_read_ahead_buf(block_id_t block_id,

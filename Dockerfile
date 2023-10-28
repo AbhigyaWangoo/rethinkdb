@@ -18,5 +18,5 @@ RUN make clean
 RUN make -j4
 RUN make install
 
-CMD ["build/release/rethinkdb", "--bind", "all"]
+CMD ["build/release/rethinkdb", "--directory", "rethinkdb_data", "--bind", "all"]
 

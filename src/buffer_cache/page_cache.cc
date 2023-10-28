@@ -7,6 +7,7 @@
 #include <functional>
 #include <iterator>
 #include <stack>
+#include <fstream> // Include the necessary header file for spitting contents to file
 
 #include "arch/runtime/coroutines.hpp"
 #include "arch/runtime/runtime.hpp"
@@ -61,6 +62,21 @@ page_read_ahead_cb_t::page_read_ahead_cb_t(serializer_t *serializer,
 }
 
 page_read_ahead_cb_t::~page_read_ahead_cb_t() { }
+
+void page_cache_t::spit_cache_contents(std::string filename) {
+    std::ofstream ofs(filename);
+    printf("Entering spit cache contents\n");
+
+    for (auto it = current_pages_.begin(); it != current_pages_.end(); ++it) {
+        std::pair<const block_id_t, alt::current_page_t *> block_to_page = *it;
+        page_t* current_page = block_to_page.second->page_.get_page_for_read(); // read page and get pointer
+
+        ser_buffer_t* buff = current_page->get_loaded_ser_buffer();
+        std::string page(buff->cache_data);
+
+        ofs << page << std::endl;
+    }
+}
 
 void page_read_ahead_cb_t::offer_read_ahead_buf(
         block_id_t block_id,
@@ -243,6 +259,8 @@ page_cache_t::page_cache_t(serializer_t *_serializer,
 }
 
 page_cache_t::~page_cache_t() {
+    spit_cache_contents("cache_output.txt");
+
     assert_thread();
 
     have_read_ahead_cb_destroyed();

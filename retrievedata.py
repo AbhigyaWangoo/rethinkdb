@@ -1,16 +1,31 @@
-import rethinkdb as r
+from rethinkdb import r
 
-# Connect to the RethinkDB server
-conn = r.connect(host='localhost', port=28015, db='rethinkdb')
+connection = r.connect()
 
-# Get cache information from the system table
-cache_info = r.db('rethinkdb').table('server_status').get(1).run(conn)
+r.table_create('users').run(connection)
 
-# Print cache information
-print("Cache Information:")
-print(f"Total Cache Size: {cache_info['http_cache']['total_size']} MB")
-print(f"Cache In Use: {cache_info['http_cache']['in_use_size']} MB")
-print(f"Cache Free: {cache_info['http_cache']['free_size']} MB")
+# Insert data into the "users" table
+user_data = {
+    'name': 'John Doe',
+    'age': 30,
+    'email': 'john.doe@example.com'
+}
+
+r.table('users').insert(user_data).run(connection)
+
+# Query the data from the table
+cursor = r.table('users').run(connection)
+for document in cursor:
+    print(document)
 
 # Close the connection
-conn.close()
+connection.close()
+
+# Get cache information from the system table
+# cache_info = RethinkDB.db('rethinkdb').table('server_status').get(1).run(connection)
+
+# Print cache information
+# print("Cache Information:")
+# print(f"Total Cache Size: {cache_info['http_cache']['total_size']} MB")
+# print(f"Cache In Use: {cache_info['http_cache']['in_use_size']} MB")
+# print(f"Cache Free: {cache_info['http_cache']['free_size']} MB")

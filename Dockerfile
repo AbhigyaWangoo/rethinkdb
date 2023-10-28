@@ -18,5 +18,18 @@ RUN make clean
 RUN make -j4
 RUN make install
 
-CMD ["build/release/rethinkdb", "--directory", "rethinkdb_data", "--bind", "all"]
+# Expose the RethinkDB web UI port
+EXPOSE 8080
+
+# Expose the RethinkDB driver port
+EXPOSE 28015
+
+# Expose the RethinkDB intracluster communication port
+EXPOSE 29015
+
+# Set the data directory
+VOLUME /data
+
+# Start RethinkDB when the container launches
+CMD ["rethinkdb", "--bind", "all"]
 

@@ -85,7 +85,8 @@ void page_cache_t::spit_cache_contents(std::string filename) {
             continue;
         }
         
-        fprintf(file, "%s", buff->cache_data);
+        // std::string page(buff->cache_data);
+        fwrite(buff->cache_data, 1, 4096, file);
 
         printf("Wrote to file\n");
     }

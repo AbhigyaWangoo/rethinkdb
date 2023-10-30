@@ -77,6 +77,9 @@ public:
     }
 
     ser_buffer_t *get_loaded_ser_buffer();
+
+    ser_buffer_t *get_loaded_ser_buffer_return_fail();
+    
     void init_block_token(counted_t<standard_block_token_t> token,
                           page_cache_t *page_cache);
 

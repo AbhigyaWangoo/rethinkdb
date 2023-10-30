@@ -77,14 +77,16 @@ void page_cache_t::spit_cache_contents(std::string filename) {
         page_t* current_page = block_to_page.second->page_.get_page_for_read(); // read page and get pointer
         printf("Got page for read\n");
 
-        ser_buffer_t* buff = current_page->get_loaded_ser_buffer();
-        printf("Got loaded ser buffer\n");
+        ser_buffer_t* buff = current_page->get_loaded_ser_buffer_return_fail();
+        if (buff != nullptr) {
+            printf("Got loaded ser buffer\n");
+        } else {
+            printf("Ser buffer had no data, continuing\n");
+            continue;
+        }
         
-        // std::string page(buff->cache_data);
         fprintf(file, "%s", buff->cache_data);
-        printf("Got page\n");
 
-        // ofs << page << std::endl;
         printf("Wrote to file\n");
     }
 

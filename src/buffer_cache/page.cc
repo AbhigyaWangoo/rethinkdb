@@ -565,6 +565,14 @@ ser_buffer_t *page_t::get_loaded_ser_buffer() {
     return buf_.ser_buffer();
 }
 
+ser_buffer_t *page_t::get_loaded_ser_buffer_return_fail() {
+    if (buf_.has()) {
+        return buf_.ser_buffer();
+    } else {
+        return nullptr;
+    }
+}
+
 // Used for after we've flushed the page.
 void page_t::init_block_token(counted_t<standard_block_token_t> token,
                               DEBUG_VAR page_cache_t *page_cache) {

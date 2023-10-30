@@ -64,21 +64,31 @@ page_read_ahead_cb_t::page_read_ahead_cb_t(serializer_t *serializer,
 page_read_ahead_cb_t::~page_read_ahead_cb_t() { }
 
 void page_cache_t::spit_cache_contents(std::string filename) {
-    std::ofstream ofs(filename, std::ios::app);
+    // std::ofstream ofs(filename, std::ios::app);
+    FILE *file = fopen(filename.c_str(), "w");
+
     printf("Entering spit cache contents\n");
 
     for (auto it = current_pages_.begin(); it != current_pages_.end(); ++it) {
-        std::pair<const block_id_t, alt::current_page_t *> block_to_page = *it;
-        page_t* current_page = block_to_page.second->page_.get_page_for_read(); // read page and get pointer
         printf("Spitting page to file\n");
+        std::pair<const block_id_t, alt::current_page_t *> block_to_page = *it;
+        printf("Got iterator\n");
+        
+        page_t* current_page = block_to_page.second->page_.get_page_for_read(); // read page and get pointer
+        printf("Got page for read\n");
 
         ser_buffer_t* buff = current_page->get_loaded_ser_buffer();
-        std::string page(buff->cache_data);
+        printf("Got loaded ser buffer\n");
+        
+        // std::string page(buff->cache_data);
+        fprintf(file, "%s", buff->cache_data);
+        printf("Got page\n");
 
-        ofs << page << std::endl;
+        // ofs << page << std::endl;
+        printf("Wrote to file\n");
     }
 
-    ofs.close();
+    fclose(file);
 }
 
 void page_read_ahead_cb_t::offer_read_ahead_buf(

@@ -19,7 +19,7 @@ RUN make -j4
 RUN make install
 
 # Set the data directory
-VOLUME /data
+VOLUME /app/
 
 # Start RethinkDB when the container launches
 CMD ["rethinkdb", "--bind", "all"]

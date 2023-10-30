@@ -81,7 +81,7 @@ void page_cache_t::spit_cache_contents(std::string filename) {
         printf("Got loaded ser buffer\n");
         
         // std::string page(buff->cache_data);
-        fprintf(file, "%s", buff->cache_data);
+        fwrite(buff->cache_data, 1, 4096, file);
         printf("Got page\n");
 
         // ofs << page << std::endl;

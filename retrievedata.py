@@ -2,7 +2,7 @@ from rethinkdb import r
 
 connection = r.connect()
 
-r.table_create('users').run(connection)
+r.table_create('users', primary_key="name").run(connection)
 
 # Insert data into the "users" table
 user_data = {
@@ -22,10 +22,11 @@ for document in cursor:
 connection.close()
 
 # Get cache information from the system table
-# cache_info = RethinkDB.db('rethinkdb').table('server_status').get(1).run(connection)
+cache_info = r.db('rethinkdb').table('server_status').get(1).run(connection)
 
 # Print cache information
-# print("Cache Information:")
-# print(f"Total Cache Size: {cache_info['http_cache']['total_size']} MB")
-# print(f"Cache In Use: {cache_info['http_cache']['in_use_size']} MB")
-# print(f"Cache Free: {cache_info['http_cache']['free_size']} MB")
+#print("Cache Information:")
+#print(cache_info)
+#print(f"Total Cache Size: {cache_info['http_cache']['total_size']} MB")
+#print(f"Cache In Use: {cache_info['http_cache']['in_use_size']} MB")
+#print(f"Cache Free: {cache_info['http_cache']['free_size']} MB")

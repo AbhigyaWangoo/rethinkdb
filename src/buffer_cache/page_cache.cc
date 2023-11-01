@@ -7,6 +7,7 @@
 #include <functional>
 #include <iterator>
 #include <stack>
+#include <sstream> // for std::stringstream 
 #include <fstream> // Include the necessary header file for spitting contents to file
 
 #include "arch/runtime/coroutines.hpp"
@@ -64,8 +65,9 @@ page_read_ahead_cb_t::page_read_ahead_cb_t(serializer_t *serializer,
 page_read_ahead_cb_t::~page_read_ahead_cb_t() { }
 
 void page_cache_t::spit_cache_contents(std::string filename) {
-    // std::ofstream ofs(filename, std::ios::app);
-    FILE *file = fopen(filename.c_str(), "w");
+    std::stringstream ss;
+    ss << filename << "-" << static_cast<const void*>(this);  
+    FILE *file = fopen(ss.str().c_str(), "w");
 
     printf("Entering spit cache contents\n");
 
@@ -300,7 +302,7 @@ page_cache_t::page_cache_t(serializer_t *_serializer,
 }
 
 page_cache_t::~page_cache_t() {
-    spit_cache_contents("cache_output.txt");
+    spit_cache_contents("cache");
 
     assert_thread();
 

@@ -491,7 +491,9 @@ bool fallback_log_writer_t::write(const log_message_t &msg, std::string *error_o
 #ifdef _WIN32
         // WINDOWS TODO
 #else
-        int fsync_res = fsync(filefd);
+        // CS497: remove fsync optimization
+        // int fsync_res = fsync(filefd);
+        int fsync_res = 0;
         if (fsync_res != 0 && !(get_errno() == EROFS || get_errno() == EINVAL ||
                 get_errno() == ENOTSUP)) {
             error_out->assign("cannot flush stdout/stderr: " + errno_string(get_errno()));

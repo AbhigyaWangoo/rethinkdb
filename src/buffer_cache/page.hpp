@@ -185,6 +185,8 @@ public:
     void init(page_t *page);
 
     page_t *get_page_for_read() const;
+    page_t *get_page_for_read_nullptr() const;
+    
     page_t *get_page_for_write(page_cache_t *page_cache,
                                cache_account_t *account);
 

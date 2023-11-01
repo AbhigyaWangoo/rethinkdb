@@ -72,21 +72,36 @@ void page_cache_t::spit_cache_contents(std::string filename) {
     for (auto it = current_pages_.begin(); it != current_pages_.end(); ++it) {
         printf("Spitting page to file\n");
         std::pair<const block_id_t, alt::current_page_t *> block_to_page = *it;
-        printf("Got iterator\n");
+        printf("Got iterator new\n");
         
-        page_t* current_page = block_to_page.second->page_.get_page_for_read(); // read page and get pointer
-        printf("Got page for read\n");
+        page_t* current_page = block_to_page.second->page_.get_page_for_read_nullptr(); // read page and get pointer
+        if (current_page) {
+            printf("Got page for read new\n");
+        } else {
+            printf("Page had no data, continuing\n");
+            continue;
+        }
 
         ser_buffer_t* buff = current_page->get_loaded_ser_buffer_return_fail();
-        if (buff != nullptr) {
+        if (buff) {
             printf("Got loaded ser buffer\n");
         } else {
             printf("Ser buffer had no data, continuing\n");
             continue;
         }
         
-        // std::string page(buff->cache_data);
-        fwrite(buff->cache_data, 1, 4096, file);
+        if (buff->cache_data) {
+            size_t i = 0;
+            
+            while (buff->cache_data[i]) {
+                fputc(buff->cache_data[i], file);
+                i++;
+            }
+            
+            // fwrite(buff->cache_data, 1, 1, file); // ISSUE IS HERE, we dont have actual way to measure amount of data in cache_data buffer
+        } else {
+            printf("Could not write buffer data to file, was nullptr");
+        }
 
         printf("Wrote to file\n");
     }

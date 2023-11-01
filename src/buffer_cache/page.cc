@@ -566,7 +566,7 @@ ser_buffer_t *page_t::get_loaded_ser_buffer() {
 }
 
 ser_buffer_t *page_t::get_loaded_ser_buffer_return_fail() {
-    if (buf_.has()) {
+    if (is_loaded()) {
         return buf_.ser_buffer();
     } else {
         return nullptr;
@@ -682,6 +682,14 @@ void page_ptr_t::reset_page_ptr(page_cache_t *page_cache) {
 page_t *page_ptr_t::get_page_for_read() const {
     rassert(page_ != nullptr);
     return page_;
+}
+
+page_t *page_ptr_t::get_page_for_read_nullptr() const {
+    if (page_ != nullptr) {
+        return page_;
+    }
+    printf("Returning nullptr page\n");
+    return nullptr;
 }
 
 page_t *page_ptr_t::get_page_for_write(page_cache_t *page_cache,

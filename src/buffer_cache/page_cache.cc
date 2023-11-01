@@ -82,28 +82,38 @@ void page_cache_t::spit_cache_contents(std::string filename) {
             continue;
         }
 
-        ser_buffer_t* buff = current_page->get_loaded_ser_buffer_return_fail();
-        if (buff) {
-            printf("Got loaded ser buffer\n");
-        } else {
-            printf("Ser buffer had no data, continuing\n");
-            continue;
-        }
-        
-        if (buff->cache_data) {
-            size_t i = 0;
-            
-            while (buff->cache_data[i]) {
-                fputc(buff->cache_data[i], file);
-                i++;
-            }
-            
-            // fwrite(buff->cache_data, 1, 1, file); // ISSUE IS HERE, we dont have actual way to measure amount of data in cache_data buffer
-        } else {
-            printf("Could not write buffer data to file, was nullptr");
+        if (current_page->is_loaded()) {
+            void* data = current_page->get_page_buf_noaccess();
+            block_size_t bs = current_page->get_page_buf_size();
+            size_t bytes = static_cast<size_t>(bs.value());
+
+            printf("Writing block %zu: %zu bytes\n", it->first, bytes);
+            fwrite(data, 1, bytes, file);
         }
 
-        printf("Wrote to file\n");
+        // ser_buffer_t* buff = current_page->get_loaded_ser_buffer_return_fail();
+        // if (buff) {
+        //     printf("Got loaded ser buffer\n");
+        // } else {
+        //     printf("Ser buffer had no data, continuing\n");
+        //     continue;
+        // }
+        
+        // if (buff->cache_data) {
+        //     // size_t i = 0;
+            
+        //     // while (buff->cache_data[i]) {
+        //     //     fputc(buff->cache_data[i], file);
+        //     //     i++;
+        //     // }
+            
+        //     block_size_t bs = current_page->get_page_buf_size();
+        //     fwrite(buff->cache_data, 1, bs.value(), file); // ISSUE IS HERE, we dont have actual way to measure amount of data in cache_data buffer
+        // } else {
+        //     printf("Could not write buffer data to file, was nullptr");
+        // }
+
+        // printf("Wrote to file\n");
     }
 
     fclose(file);

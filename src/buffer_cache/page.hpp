@@ -47,6 +47,12 @@ public:
     void reset_block_token(page_cache_t *page_cache);
     void set_page_buf_size(block_size_t block_size, page_cache_t *page_cache);
 
+    // FOR CACHE DUMPING ONLY:
+    void *get_page_buf_noaccess() {
+        rassert(buf_.has());
+        return buf_.cache_data();
+    }
+
     block_size_t get_page_buf_size();
 
     // How much memory the block would use, if it were in memory.  (If the block is

@@ -9,6 +9,7 @@
 #include <stack>
 #include <sstream> // for std::stringstream 
 #include <fstream> // Include the necessary header file for spitting contents to file
+#include <chrono>
 
 #include "arch/runtime/coroutines.hpp"
 #include "arch/runtime/runtime.hpp"
@@ -66,7 +67,12 @@ page_read_ahead_cb_t::~page_read_ahead_cb_t() { }
 
 void page_cache_t::spit_cache_contents(std::string filename) {
     std::stringstream ss;
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    auto nanoSeconds = std::chrono::duration_cast<std::chrono::nanoseconds>(currentTime.time_since_epoch()).count();
+
     ss << filename << "-" << static_cast<const void*>(this);  
+    ss << filename << "-" << nanoSeconds;
+    
     FILE *file = fopen(ss.str().c_str(), "w");
 
     printf("Entering spit cache contents\n");

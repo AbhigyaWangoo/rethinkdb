@@ -280,8 +280,9 @@ page_cache_t::page_cache_t(serializer_t *_serializer,
 
 page_cache_t::~page_cache_t() {
     dump_cache("cache");
-    std::ofstream fp("Missrate.txt");
-    fp << misses_ << std::endl;
+    std::ofstream fp("Missrate.txt", std::ios_base::app);
+    fp << "Miss rate:" << misses_ << std::endl;
+    std::cout << "Miss rate:" << misses_ << std::endl;
 
     assert_thread();
 

@@ -38,7 +38,6 @@ class page_cache_t;
 class page_txn_t;
 
 enum class page_create_t { no, yes };
-
 }  // namespace alt
 
 enum class alt_create_t { create };
@@ -372,7 +371,7 @@ public:
     auto_drainer_t::lock_t drainer_lock() { return drainer_->lock(); }
     serializer_t *serializer() { return serializer_; }
 
-    void spit_cache_contents(std::string filename);
+    void dump_cache(std::string filename);
 
 private:
     friend class page_read_ahead_cb_t;
@@ -452,6 +451,8 @@ private:
                                                     auto_drainer_t::lock_t lock);
 
     const max_block_size_t max_block_size_;
+
+    size_t misses_ = 0;
 
     // We use a separate I/O account for reads in each page cache.
     // Note that block writes use a shared I/O account that sits in the

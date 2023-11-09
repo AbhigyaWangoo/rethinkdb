@@ -281,7 +281,7 @@ page_cache_t::page_cache_t(serializer_t *_serializer,
 page_cache_t::~page_cache_t() {
     dump_cache("cache");
     std::ofstream fp("Missrate.txt");
-    std::cout << misses_ << fp << std::endl;
+    fp << misses_ << std::endl;
 
     assert_thread();
 

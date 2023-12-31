@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <utility>
+#include <fstream>
 
 #include "buffer_cache/page_cache.hpp"
 #include "buffer_cache/types.hpp"

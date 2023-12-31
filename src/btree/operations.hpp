@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <utility>
 #include <vector>
+#include <fstream>
 
 #include "btree/node.hpp"
 #include "btree/stats.hpp"

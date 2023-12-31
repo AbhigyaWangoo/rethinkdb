@@ -812,10 +812,15 @@ buf_read_t::~buf_read_t() {
 
 const void *buf_read_t::get_data_read(uint32_t *block_size_out) {
     page_t *page = lock_->get_held_page_for_read();
+    std::ofstream ofs("readmiss.txt", std::ofstream::app);
+    ofs << "1";
     if (!page_acq_.has()) {
         page_acq_.init(page, &lock_->cache()->page_cache_,
                        lock_->txn()->account());
+        
+        ofs << "2";
     }
+    ofs.close();
     page_acq_.buf_ready_signal()->wait();
     *block_size_out = page_acq_.get_buf_size().value();
     return page_acq_.get_buf_read();

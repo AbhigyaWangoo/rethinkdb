@@ -489,7 +489,7 @@ public:
     ~meanwhile_t() {
         if (!done.is_pulsed()) {
             interrupt.pulse();
-            done.wait_lazily_ordered();
+            done.wait_lazily_ordered(false);
         }
     }
 

@@ -14,7 +14,7 @@ void nap(int64_t ms) THROWS_NOTHING {
     if (ms > 0) {
         signal_timer_t timer;
         timer.start(ms);
-        timer.wait_lazily_ordered();
+        timer.wait_lazily_ordered(false);
     }
 }
 

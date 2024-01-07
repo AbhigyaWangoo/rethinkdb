@@ -467,10 +467,6 @@ void find_keyvalue_location_for_write(
         if (key_found) {
             keyvalue_location_out->there_originally_was_value = true;
             keyvalue_location_out->value = std::move(tmp);
-        } else {
-            std::ofstream ofs ("writemiss.txt", std::ofstream::app);
-            ofs << "1";
-            ofs.close();
         }
     }
 
@@ -554,10 +550,6 @@ void find_keyvalue_location_for_read(
         keyvalue_location_out->buf = std::move(buf);
         keyvalue_location_out->there_originally_was_value = true;
         keyvalue_location_out->value = std::move(value);
-    } else {
-        std::ofstream ofs("readmiss.txt", std::ofstream::app);
-        ofs << 1;
-        ofs.close();
     }
 }
 

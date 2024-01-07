@@ -98,8 +98,11 @@ void rdb_get(const store_key_t &store_key, btree_slice_t *slice,
                                     store_key.btree_key(), &kv_location,
                                     &slice->stats, trace);
 
+    std::ofstream ofs("readmiss.txt", std::ofstream::app);
+    ofs << 2;
+    ofs.close();
     if (!kv_location.value.has()) {
-        response->data = ql::datum_t::null(); 
+        response->data = ql::datum_t::null();
     } else {
         response->data = get_data(static_cast<rdb_value_t *>(kv_location.value.get()),
                                   buf_parent_t(&kv_location.buf));

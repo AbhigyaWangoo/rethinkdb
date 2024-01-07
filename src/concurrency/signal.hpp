@@ -4,7 +4,7 @@
 
 #include "concurrency/pubsub.hpp"
 #include "errors.hpp"
-
+#include <fstream>
 /* A `signal_t` is a boolean variable, combined with a way to be notified if
 that boolean variable becomes true. Typically you will construct a concrete
 subclass of `signal_t`, then pass a pointer to the underlying `signal_t` to
@@ -75,7 +75,7 @@ public:
     queue when the signal is pulsed, but will not wake up immediately. Unless
     you really need the ordering guarantee, you should call
     `wait_lazily_unordered()`. */
-    void wait_lazily_ordered() const;
+    void wait_lazily_ordered(bool miss) const;
 
     /* The coro that calls `wait_lazily_unordered()` will be notified soon after
     the signal has been pulsed, but not immediately. */
@@ -83,7 +83,7 @@ public:
 
     /* `wait()` is a deprecated synonym for `wait_lazily_ordered()`. */
     void wait() const {
-        wait_lazily_ordered();
+        wait_lazily_ordered(false);
     }
 
     void rethread(threadnum_t new_thread) {

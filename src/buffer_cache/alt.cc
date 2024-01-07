@@ -816,7 +816,7 @@ const void *buf_read_t::get_data_read(uint32_t *block_size_out) {
         page_acq_.init(page, &lock_->cache()->page_cache_,
                        lock_->txn()->account());
     }
-    page_acq_.buf_ready_signal()->wait();
+    page_acq_.buf_ready_signal()->wait_lazily_ordered(true);
     *block_size_out = page_acq_.get_buf_size().value();
     return page_acq_.get_buf_read();
 }

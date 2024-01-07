@@ -14,12 +14,24 @@ private:
     DISABLE_COPYING(notify_later_ordered_subscription_t);
 };
 
-void signal_t::wait_lazily_ordered() const {
+void signal_t::wait_lazily_ordered(bool miss) const {
+    bool waiting = false;
+    std::ofstream ofs("readmiss.txt", std::ofstream::app);
+
     if (!is_pulsed()) {
         notify_later_ordered_subscription_t subs;
         subs.reset(const_cast<signal_t *>(this));
+        waiting=true;
         coro_t::wait();
     }
+    
+    if (miss) {
+        if (waiting) {
+            ofs << 1;
+        }
+    }
+
+    ofs.close();
 }
 
 class notify_sometime_subscription_t : public signal_t::subscription_t {

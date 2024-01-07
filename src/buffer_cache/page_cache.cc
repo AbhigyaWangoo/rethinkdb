@@ -7,6 +7,10 @@
 #include <functional>
 #include <iterator>
 #include <stack>
+#include <sstream> // for std::stringstream 
+#include <fstream> // Include the necessary header file for spitting contents to file
+#include <chrono>
+#include <iostream>
 
 #include "arch/runtime/coroutines.hpp"
 #include "arch/runtime/runtime.hpp"
@@ -61,6 +65,38 @@ page_read_ahead_cb_t::page_read_ahead_cb_t(serializer_t *serializer,
 }
 
 page_read_ahead_cb_t::~page_read_ahead_cb_t() { }
+
+void page_cache_t::dump_cache(std::string filename) {
+    std::stringstream ss;
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    auto nanoSeconds = std::chrono::duration_cast<std::chrono::nanoseconds>(currentTime.time_since_epoch()).count();
+
+    ss << filename << "-" << static_cast<const void*>(this);  
+    ss << "-" << nanoSeconds;
+    
+    FILE *file = fopen(ss.str().c_str(), "w");
+    printf("Entering spit cache contents\n");
+
+    for (auto it = current_pages_.begin(); it != current_pages_.end(); ++it) {
+        std::pair<const block_id_t, alt::current_page_t *> block_to_page = *it;
+
+        page_t* current_page = block_to_page.second->page_.get_page_for_read_nullptr(); // read page and get pointer
+        if (!current_page) {
+            printf("Page had no data, continuing\n");
+            continue;
+        }
+
+        if (current_page->is_loaded()) {
+            void* data = current_page->get_page_buf_noaccess();
+            block_size_t bs = current_page->get_page_buf_size();
+            size_t bytes = static_cast<size_t>(bs.value());
+
+            fwrite(data, 1, bytes, file);
+        }
+    }
+
+    fclose(file);
+}
 
 void page_read_ahead_cb_t::offer_read_ahead_buf(
         block_id_t block_id,
@@ -243,6 +279,11 @@ page_cache_t::page_cache_t(serializer_t *_serializer,
 }
 
 page_cache_t::~page_cache_t() {
+    dump_cache("cache");
+    std::ofstream fp("Missrate.txt", std::ios_base::app);
+    fp << "Miss rate:" << misses_ << std::endl;
+    std::cout << "Miss rate:" << misses_ << std::endl;
+
     assert_thread();
 
     have_read_ahead_cb_destroyed();
@@ -358,6 +399,7 @@ current_page_t *page_cache_t::page_for_block_id(block_id_t block_id) {
                 block_id);
         page_it = current_pages_.insert(
             page_it, std::make_pair(block_id, new current_page_t(block_id)));
+            misses_++;
     } else {
         rassert(!page_it->second->is_deleted());
     }
@@ -412,7 +454,7 @@ current_page_t *page_cache_t::internal_page_for_new_chosen(block_id_t block_id) 
     auto inserted_page = current_pages_.insert(std::make_pair(
         block_id, new current_page_t(block_id, std::move(buf), this)));
     guarantee(inserted_page.second);
-
+    misses_++;
     return inserted_page.first->second;
 }
 

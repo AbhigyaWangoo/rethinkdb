@@ -628,8 +628,10 @@ int perform_datasync(fd_t fd) {
 
 #elif defined(__linux__) || defined(__FreeBSD__)
 
-    int res = fdatasync(fd);
-    return res == -1 ? get_errno() : 0;
+    // CS497: remove fsync optimization
+    // int res = fdatasync(fd);
+    // return res == -1 ? get_errno() : 0;
+    return 0;
 
 #else
 #error "perform_datasync not implemented"
@@ -658,12 +660,13 @@ MUST_USE int fsync_parent_directory(const char *path) {
     }
     scoped_fd_t fd(res);
 
-    do {
-        res = fsync(fd.get());
-    } while (res == -1 && get_errno() == EINTR);
-    if (res == -1) {
-        return get_errno();
-    }
+    // CS497: remove fsync optimization
+    // do {
+    //     res = fsync(fd.get());
+    // } while (res == -1 && get_errno() == EINTR);
+    // if (res == -1) {
+    //     return get_errno();
+    // }
 
     return 0;
 #endif

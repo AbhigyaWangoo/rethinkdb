@@ -565,6 +565,14 @@ ser_buffer_t *page_t::get_loaded_ser_buffer() {
     return buf_.ser_buffer();
 }
 
+ser_buffer_t *page_t::get_loaded_ser_buffer_return_fail() {
+    if (is_loaded()) {
+        return buf_.ser_buffer();
+    } else {
+        return nullptr;
+    }
+}
+
 // Used for after we've flushed the page.
 void page_t::init_block_token(counted_t<standard_block_token_t> token,
                               DEBUG_VAR page_cache_t *page_cache) {
@@ -674,6 +682,14 @@ void page_ptr_t::reset_page_ptr(page_cache_t *page_cache) {
 page_t *page_ptr_t::get_page_for_read() const {
     rassert(page_ != nullptr);
     return page_;
+}
+
+page_t *page_ptr_t::get_page_for_read_nullptr() const {
+    if (page_ != nullptr) {
+        return page_;
+    }
+    printf("Returning nullptr page\n");
+    return nullptr;
 }
 
 page_t *page_ptr_t::get_page_for_write(page_cache_t *page_cache,

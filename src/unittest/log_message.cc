@@ -49,7 +49,8 @@ void test_chunks(const std::vector<size_t> &sizes) {
         ASSERT_EQ(line.size(), res);
     }
 #ifndef _WIN32
-    fsync(fd.get());
+    // CS497: remove fsync optimization
+    // fsync(fd.get());
 #endif
     file_reverse_reader_t rr(std::move(fd));
     for (ssize_t i = sizes.size() - 1; i >= 0; --i) {

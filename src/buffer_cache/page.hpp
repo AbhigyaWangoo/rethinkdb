@@ -47,6 +47,12 @@ public:
     void reset_block_token(page_cache_t *page_cache);
     void set_page_buf_size(block_size_t block_size, page_cache_t *page_cache);
 
+    // FOR CACHE DUMPING ONLY:
+    void *get_page_buf_noaccess() {
+        rassert(buf_.has());
+        return buf_.cache_data();
+    }
+
     block_size_t get_page_buf_size();
 
     // How much memory the block would use, if it were in memory.  (If the block is
@@ -77,6 +83,9 @@ public:
     }
 
     ser_buffer_t *get_loaded_ser_buffer();
+
+    ser_buffer_t *get_loaded_ser_buffer_return_fail();
+    
     void init_block_token(counted_t<standard_block_token_t> token,
                           page_cache_t *page_cache);
 
@@ -182,6 +191,8 @@ public:
     void init(page_t *page);
 
     page_t *get_page_for_read() const;
+    page_t *get_page_for_read_nullptr() const;
+    
     page_t *get_page_for_write(page_cache_t *page_cache,
                                cache_account_t *account);
 

@@ -25,10 +25,8 @@ void signal_t::wait_lazily_ordered(bool miss) const {
         coro_t::wait();
     }
     
-    if (miss) {
-        if (waiting) {
-            ofs << 1;
-        }
+    if (miss && waiting) {
+        ofs << 1;
     }
 
     ofs.close();
